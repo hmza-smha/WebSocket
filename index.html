@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WebSocket Client</title>
+</head>
+<body>
+    <h1>WebSocket Client</h1>
+    <button id="connectButton">Connect</button>
+    <button id="sendButton" disabled>Send Message</button>
+    <p id="status">Disconnected</p>
+    <script>
+        let webSocket;
+
+        document.getElementById('connectButton').addEventListener('click', () => {
+            webSocket = new WebSocket('ws://localhost:5000/ws/');
+
+            webSocket.onopen = () => {
+                document.getElementById('status').innerText = 'Connected';
+                document.getElementById('sendButton').disabled = false;
+                console.log('WebSocket connection opened');
+            };
+
+            webSocket.onmessage = (event) => {
+                console.log('Received:', event.data);
+            };
+
+            webSocket.onclose = () => {
+                document.getElementById('status').innerText = 'Disconnected';
+                document.getElementById('sendButton').disabled = true;
+                console.log('WebSocket connection closed');
+            };
+
+            webSocket.onerror = (error) => {
+                console.error('WebSocket error:', error);
+            };
+        });
+
+        document.getElementById('sendButton').addEventListener('click', () => {
+            const message = 'Hello, WebSocket Server!';
+            webSocket.send(message);
+            console.log('Sent:', message);
+        });
+    </script>
+</body>
+</html>
